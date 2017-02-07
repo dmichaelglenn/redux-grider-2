@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-export class BookList extends Component {
+import {selectBook} from '../actions/index';
+import {bindActionCreators} from 'redux';
+
+class BookList extends Component {
     renderList() {
         return this.props.books.map((book) => {
             return (
-                <li key={book.title} className="list-group-item">{book.title}</li>
+                <li  
+                key={book.title} 
+                onClick={() => this.props.selectBook(book)}
+                className="list-group-item">{book.title}</li>
             );
         });
     } 
@@ -18,6 +24,7 @@ export class BookList extends Component {
         )
     }
 }
+//importing connect and using mapStateToProps 'promotes' this component into a container
 
 function mapStateToProps(state) {
    return {
@@ -25,4 +32,10 @@ function mapStateToProps(state) {
    };   
 }
 
-export default connect(mapStateToProps)(BookList);
+//anything retuned from this func will be props on BookList container
+function mapDispatchToProps(dispatch) {
+    //whenever selectBook gets called, the result will be passed to all reducers
+    return bindActionCreators({selectBook: selectBook}, dispatch);
+}
+//promote BookList to a container 
+export default connect(mapStateToProps, mapDispatchToProps)(BookList);
